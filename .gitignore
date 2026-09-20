@@ -1,12 +1,38 @@
 includes/config.php
 install.lock
+
+# Photograph and video uploads — keep folders, ignore the media
 uploads/photos/originals/*
 uploads/photos/thumbs/*
-uploads/designs/originals/*
-uploads/designs/thumbs/*
 uploads/videos/originals/*
 uploads/videos/thumbs/*
 uploads/videos/files/*
+uploads/designs/originals/*
+uploads/designs/thumbs/*
 !uploads/**/.gitkeep
+
+# Photo and video files anywhere else in the project
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.tif
+*.tiff
+*.bmp
+*.heic
+*.raw
+*.cr2
+*.nef
+*.mp4
+*.mov
+*.webm
+*.avi
+*.mkv
+*.m4v
+
+# Allow small site assets (favicon, etc.)
+!assets/**
+
 .DS_Store
 Thumbs.db
