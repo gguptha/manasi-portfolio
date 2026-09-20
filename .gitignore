@@ -1,0 +1,12 @@
+includes/config.php
+install.lock
+uploads/photos/originals/*
+uploads/photos/thumbs/*
+uploads/designs/originals/*
+uploads/designs/thumbs/*
+uploads/videos/originals/*
+uploads/videos/thumbs/*
+uploads/videos/files/*
+!uploads/**/.gitkeep
+.DS_Store
+Thumbs.db
