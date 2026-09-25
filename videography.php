@@ -40,17 +40,17 @@ require __DIR__ . '/includes/header.php';
                         <?php else: ?>
                             <span class="video-placeholder">▶</span>
                         <?php endif; ?>
-                        <span class="thumb-meta">
-                            <span class="thumb-title"><?= e($video['title']) ?></span>
-                            <span class="thumb-sub">
-                                <?php
-                                echo e(implode(' · ', array_filter([
-                                    $video['category_name'] ?? null,
-                                    $video['park_name'] ?? null,
-                                    isset($video['year_label']) ? (string) $video['year_label'] : null,
-                                ])));
-                                ?>
-                            </span>
+                    </span>
+                    <span class="thumb-meta">
+                        <span class="thumb-title"><?= e($video['title']) ?></span>
+                        <span class="thumb-sub">
+                            <?php
+                            echo e(implode(' · ', array_filter([
+                                $video['category_name'] ?? null,
+                                $video['park_name'] ?? null,
+                                isset($video['year_label']) ? (string) $video['year_label'] : null,
+                            ])));
+                            ?>
                         </span>
                     </span>
                 </a>

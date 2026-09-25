@@ -34,10 +34,10 @@ require __DIR__ . '/includes/header.php';
                 <a class="thumb" href="<?= e(url('design-item.php?id=' . (int) $item['id'])) ?>">
                     <span class="thumb-frame">
                         <img src="<?= e(design_thumb($item)) ?>" alt="<?= e($item['title']) ?>" loading="lazy">
-                        <span class="thumb-meta">
-                            <span class="thumb-title"><?= e($item['title']) ?></span>
-                            <span class="thumb-sub"><?= !empty($item['year_label']) ? e((string) $item['year_label']) : '' ?></span>
-                        </span>
+                    </span>
+                    <span class="thumb-meta">
+                        <span class="thumb-title"><?= e($item['title']) ?></span>
+                        <span class="thumb-sub"><?= !empty($item['year_label']) ? e((string) $item['year_label']) : '' ?></span>
                     </span>
                 </a>
             <?php endforeach; ?>

@@ -39,16 +39,18 @@ $categoryNames = array_column($nav['categories'], 'name');
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="hero <?= $hero ? 'has-image' : '' ?>">
-    <?php if ($hero): ?>
-        <img class="hero-image" src="<?= e(photo_original($hero)) ?>" alt="<?= e($hero['title']) ?>">
-    <?php endif; ?>
-    <div class="hero-veil"></div>
-    <div class="hero-copy">
-        <h1><?= e($siteName) ?></h1>
-        <p class="hero-tag"><?= e($tagline) ?></p>
-    </div>
+<section class="intro">
+    <h1><?= e($siteName) ?></h1>
+    <p class="intro-tag"><?= e($tagline) ?></p>
 </section>
+
+<?php if ($hero): ?>
+<section class="feature-image">
+    <a href="<?= e(url('photo.php?id=' . (int) $hero['id'])) ?>">
+        <img src="<?= e(photo_original($hero)) ?>" alt="<?= e($hero['title']) ?>">
+    </a>
+</section>
+<?php endif; ?>
 
 <section class="section practice">
     <h2 class="practice-title">What I do.</h2>

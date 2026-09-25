@@ -137,7 +137,7 @@ $exts = [
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Install portfolio</title>
-    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/admin.css?v=2">
 </head>
 <body class="login-body">
 <div class="login-card" style="width:min(640px,94vw)">

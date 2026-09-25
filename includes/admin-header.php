@@ -12,7 +12,7 @@ $adminNav = $adminNav ?? '';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>?v=2">
     <link rel="icon" href="<?= e(asset('favicon.svg')) ?>" type="image/svg+xml">
 </head>
 <body class="admin-body">
