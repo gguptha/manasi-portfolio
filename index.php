@@ -31,13 +31,10 @@ $recent = db()->query(
 )->fetchAll();
 
 $hero = $featured[0] ?? $recent[0] ?? null;
+$work = $featured ?: $recent;
 $nav = nav_master();
-
-$counts = [
-    'photos' => (int) db()->query('SELECT COUNT(*) FROM photos WHERE is_published = 1')->fetchColumn(),
-    'videos' => (int) db()->query('SELECT COUNT(*) FROM videos WHERE is_published = 1')->fetchColumn(),
-    'designs' => (int) db()->query('SELECT COUNT(*) FROM designs WHERE is_published = 1')->fetchColumn(),
-];
+$parkNames = array_slice(array_column($nav['parks'], 'name'), 0, 3);
+$categoryNames = array_column($nav['categories'], 'name');
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -48,68 +45,46 @@ require __DIR__ . '/includes/header.php';
     <?php endif; ?>
     <div class="hero-veil"></div>
     <div class="hero-copy">
-        <p class="eyebrow">Field portfolio</p>
         <h1><?= e($siteName) ?></h1>
         <p class="hero-tag"><?= e($tagline) ?></p>
-        <?php if (setting('about_text')): ?>
-            <p class="hero-about"><?= e(setting('about_text')) ?></p>
-        <?php endif; ?>
-        <div class="hero-actions">
-            <a class="btn btn-gold" href="<?= e(url('gallery.php?type=category')) ?>">Browse photographs</a>
-            <a class="btn btn-ghost" href="<?= e(url('videography.php')) ?>">Videography</a>
-        </div>
     </div>
 </section>
 
-<section class="section collections">
-    <div class="section-head">
-        <h2>Collections</h2>
-        <p>Work is organised the way it is made — by creature, by forest, and by year.</p>
-    </div>
-    <div class="collection-cards">
-        <a class="collection-card" href="<?= e(url('gallery.php?type=category')) ?>">
-            <span>01</span>
-            <strong>Categories</strong>
-            <em><?= count($nav['categories']) ? e(implode(' · ', array_column($nav['categories'], 'name'))) : 'Reptiles, amphibians, birds, mammals' ?></em>
+<section class="section practice">
+    <h2 class="practice-title">What I do.</h2>
+    <div class="practice-grid">
+        <a class="practice-card" href="<?= e(url('gallery.php?type=category')) ?>">
+            <h3>Photography.</h3>
+            <p><?= count($categoryNames) ? e(implode(', ', $categoryNames)) . ' — stills from the field, made with attention to habitat and light.' : 'Wildlife stills from the field, made with attention to habitat and light.' ?></p>
         </a>
-        <a class="collection-card" href="<?= e(url('gallery.php?type=park')) ?>">
-            <span>02</span>
-            <strong>National Parks</strong>
-            <em><?= count($nav['parks']) ? e(implode(' · ', array_slice(array_column($nav['parks'], 'name'), 0, 4))) : 'Ranthambore, Tadoba and more' ?></em>
+        <a class="practice-card" href="<?= e(url('gallery.php?type=park')) ?>">
+            <h3>National Parks.</h3>
+            <p><?= $parkNames ? 'Work from ' . e(implode(', ', $parkNames)) . ' and other Indian forests.' : 'Field work from Indian forests and tiger reserves.' ?></p>
         </a>
-        <a class="collection-card" href="<?= e(url('gallery.php?type=year')) ?>">
-            <span>03</span>
-            <strong>Year</strong>
-            <em>Archives arranged by field season</em>
+        <a class="practice-card" href="<?= e(url('videography.php')) ?>">
+            <h3>Videography.</h3>
+            <p>Field films, behavioural notes, and landscape sequences.</p>
         </a>
-        <a class="collection-card" href="<?= e(url('design.php')) ?>">
-            <span>04</span>
-            <strong>Design & film</strong>
-            <em><?= (int) $counts['videos'] ?> films · <?= (int) $counts['designs'] ?> design works</em>
+        <a class="practice-card" href="<?= e(url('design.php')) ?>">
+            <h3>Design.</h3>
+            <p>Studio stills, composites, and related graphic work.</p>
         </a>
     </div>
 </section>
 
-<?php if ($featured): ?>
+<?php if ($work): ?>
+<section class="section work">
+    <h2 class="practice-title">Selected work.</h2>
+    <?php $photos = $work; require __DIR__ . '/includes/gallery-grid.php'; ?>
+</section>
+<?php else: ?>
 <section class="section">
-    <div class="section-head">
-        <h2>Selected work</h2>
-        <p>A short edit from the archive.</p>
-    </div>
-    <?php $photos = $featured; require __DIR__ . '/includes/gallery-grid.php'; ?>
-</section>
-<?php endif; ?>
-
-<section class="section">
-    <div class="section-head">
-        <h2>Recent photographs</h2>
-        <a class="text-link" href="<?= e(url('gallery.php?type=category')) ?>">View all</a>
-    </div>
     <?php
-    $photos = $recent;
+    $photos = [];
     $emptyText = 'The gallery is empty. Sign in to Admin to upload the first photograph.';
     require __DIR__ . '/includes/gallery-grid.php';
     ?>
 </section>
+<?php endif; ?>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

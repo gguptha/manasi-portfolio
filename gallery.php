@@ -115,8 +115,7 @@ if ($slug === '') {
     require __DIR__ . '/includes/header.php';
     ?>
     <section class="page-hero">
-        <p class="eyebrow">Archive</p>
-        <h1><?= e($title) ?></h1>
+        <h1><?= e($title) ?>.</h1>
         <p><?= e($intro) ?></p>
     </section>
     <section class="section">
@@ -176,8 +175,7 @@ $metaDescription = $intro !== '' ? $intro : $title;
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="page-hero">
-    <p class="eyebrow"><?= $type === 'category' ? 'Category' : ($type === 'park' ? 'National Park' : 'Year') ?></p>
-    <h1><?= e($title) ?></h1>
+    <h1><?= e($title) ?>.</h1>
     <?php if ($intro !== ''): ?><p><?= e($intro) ?></p><?php endif; ?>
     <p class="count-line"><?= $total ?> photograph<?= $total === 1 ? '' : 's' ?></p>
 </section>

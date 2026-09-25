@@ -46,7 +46,6 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= e(photo_original($photo)) ?>" alt="<?= e($photo['title']) ?>">
     </figure>
     <aside class="photo-sheet">
-        <p class="eyebrow">Photograph</p>
         <h1><?= e($photo['title']) ?></h1>
         <ul class="photo-crumbs">
             <?php if (!empty($photo['category_name'])): ?>

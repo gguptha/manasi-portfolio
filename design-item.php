@@ -34,7 +34,6 @@ require __DIR__ . '/includes/header.php';
         <img src="<?= e(design_original($item)) ?>" alt="<?= e($item['title']) ?>">
     </figure>
     <aside class="photo-sheet">
-        <p class="eyebrow">Design</p>
         <h1><?= e($item['title']) ?></h1>
         <?php if (!empty($item['year_label'])): ?>
             <ul class="photo-crumbs"><li><?= e((string) $item['year_label']) ?></li></ul>

@@ -22,8 +22,7 @@ $currentNav = 'design';
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="page-hero">
-    <p class="eyebrow">Studio</p>
-    <h1>Design</h1>
+    <h1>Design.</h1>
     <p>Graphic work, composites, and related stills.</p>
 </section>
 <section class="section">
@@ -35,10 +34,10 @@ require __DIR__ . '/includes/header.php';
                 <a class="thumb" href="<?= e(url('design-item.php?id=' . (int) $item['id'])) ?>">
                     <span class="thumb-frame">
                         <img src="<?= e(design_thumb($item)) ?>" alt="<?= e($item['title']) ?>" loading="lazy">
-                    </span>
-                    <span class="thumb-meta">
-                        <span class="thumb-title"><?= e($item['title']) ?></span>
-                        <span class="thumb-sub"><?= !empty($item['year_label']) ? e((string) $item['year_label']) : '' ?></span>
+                        <span class="thumb-meta">
+                            <span class="thumb-title"><?= e($item['title']) ?></span>
+                            <span class="thumb-sub"><?= !empty($item['year_label']) ? e((string) $item['year_label']) : '' ?></span>
+                        </span>
                     </span>
                 </a>
             <?php endforeach; ?>

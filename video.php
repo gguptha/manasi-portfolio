@@ -46,7 +46,6 @@ require __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </div>
     <div class="film-copy">
-        <p class="eyebrow">Videography</p>
         <h1><?= e($video['title']) ?></h1>
         <ul class="photo-crumbs">
             <?php if (!empty($video['category_name'])): ?>

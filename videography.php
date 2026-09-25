@@ -24,8 +24,7 @@ $currentNav = 'videography';
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="page-hero">
-    <p class="eyebrow">Moving image</p>
-    <h1>Videography</h1>
+    <h1>Videography.</h1>
     <p>Field films, behavioural notes, and landscape sequences.</p>
 </section>
 <section class="section">
@@ -41,17 +40,17 @@ require __DIR__ . '/includes/header.php';
                         <?php else: ?>
                             <span class="video-placeholder">▶</span>
                         <?php endif; ?>
-                    </span>
-                    <span class="thumb-meta">
-                        <span class="thumb-title"><?= e($video['title']) ?></span>
-                        <span class="thumb-sub">
-                            <?php
-                            echo e(implode(' · ', array_filter([
-                                $video['category_name'] ?? null,
-                                $video['park_name'] ?? null,
-                                isset($video['year_label']) ? (string) $video['year_label'] : null,
-                            ])));
-                            ?>
+                        <span class="thumb-meta">
+                            <span class="thumb-title"><?= e($video['title']) ?></span>
+                            <span class="thumb-sub">
+                                <?php
+                                echo e(implode(' · ', array_filter([
+                                    $video['category_name'] ?? null,
+                                    $video['park_name'] ?? null,
+                                    isset($video['year_label']) ? (string) $video['year_label'] : null,
+                                ])));
+                                ?>
+                            </span>
                         </span>
                     </span>
                 </a>

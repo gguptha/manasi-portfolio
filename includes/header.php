@@ -16,17 +16,14 @@ $currentNav = $currentNav ?? '';
     <meta name="description" content="<?= e($metaDescription) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Josefin+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
     <link rel="icon" href="<?= e(asset('favicon.svg')) ?>" type="image/svg+xml">
 </head>
 <body class="<?= e($bodyClass) ?>">
 <header class="site-header">
     <div class="header-inner">
-        <a class="wordmark" href="<?= e(url()) ?>">
-            <span class="wordmark-name"><?= e($siteName) ?></span>
-            <span class="wordmark-tag"><?= e($tagline) ?></span>
-        </a>
+        <a class="wordmark" href="<?= e(url()) ?>"><?= e($siteName) ?></a>
         <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
             <span></span><span></span>
         </button>

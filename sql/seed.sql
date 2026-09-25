@@ -6,7 +6,7 @@ SET NAMES utf8mb4;
 INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
   ('site_name', 'Manasi'),
   ('photographer_name', 'Manasi'),
-  ('tagline', 'Wildlife Photography'),
+  ('tagline', 'Wildlife photographer specialising in Indian forests and conservation storytelling'),
   ('about_text', 'Field notes from Indian forests — tigers, birds, reptiles, and the quiet hours between sightings. Photographs made on foot and from the hide, with attention to habitat and light.'),
   ('contact_email', ''),
   ('instagram_url', ''),
