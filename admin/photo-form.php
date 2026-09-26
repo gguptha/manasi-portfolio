@@ -30,12 +30,8 @@ if (oversized_post()) {
     $published = posted('is_published') ? 1 : 0;
     $sort = (int) posted('sort_order', 0);
 
-    if ($title === '') {
-        flash_set('error', 'A title is required.');
-    } elseif ($description === '') {
-        flash_set('error', 'Please add a short description.');
-    } elseif (!$categoryId || !$parkId || !$yearId) {
-        flash_set('error', 'Category, national park, and year are required.');
+    if (!$categoryId) {
+        flash_set('error', 'Please choose a category.');
     } elseif (!$photo && empty($_FILES['image']['name'])) {
         flash_set('error', 'Please choose a photograph to upload.');
     } else {
@@ -46,6 +42,18 @@ if (oversized_post()) {
                 if (!$yearId && !empty($fileMeta['exif']['taken_at'])) {
                     $yearId = find_year_id_from_date($fileMeta['exif']['taken_at']);
                 }
+            }
+
+            if ($title === '') {
+                $sourceName = (string) ($fileMeta['original_filename'] ?? ($photo['original_filename'] ?? ''));
+                $title = trim(str_replace(['_', '-'], ' ', pathinfo($sourceName, PATHINFO_FILENAME)));
+                if ($title === '') {
+                    $title = 'Untitled';
+                }
+            }
+            $title = mb_substr($title, 0, 200);
+            if ($description === '') {
+                $description = null;
             }
 
             $slug = unique_slug('photos', slugify($title), $id ?: null);
@@ -119,10 +127,10 @@ $val = function (string $key, $fallback = '') use ($photo) {
     <?= csrf_field() ?>
     <div class="span-2 panel form-stack">
         <label>Title
-            <input type="text" name="title" required value="<?= e((string) $val('title')) ?>">
+            <input type="text" name="title" value="<?= e((string) $val('title')) ?>">
         </label>
         <label>Description
-            <textarea name="description" rows="6" required placeholder="Field note, species, behaviour, light…"><?= e((string) $val('description')) ?></textarea>
+            <textarea name="description" rows="6" placeholder="Field note, species, behaviour, light…"><?= e((string) $val('description')) ?></textarea>
         </label>
         <div class="form-grid">
             <label>Category
@@ -134,16 +142,16 @@ $val = function (string $key, $fallback = '') use ($photo) {
                 </select>
             </label>
             <label>National park
-                <select name="park_id" required>
-                    <option value="">— Select —</option>
+                <select name="park_id">
+                    <option value="">— Optional —</option>
                     <?php foreach ($parks as $row): ?>
                         <option value="<?= (int) $row['id'] ?>" <?= (string) $val('park_id') === (string) $row['id'] ? 'selected' : '' ?>><?= e($row['name']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </label>
             <label>Year
-                <select name="year_id" required>
-                    <option value="">— Select —</option>
+                <select name="year_id">
+                    <option value="">— Optional —</option>
                     <?php foreach ($years as $row): ?>
                         <option value="<?= (int) $row['id'] ?>" <?= (string) $val('year_id') === (string) $row['id'] ? 'selected' : '' ?>><?= e((string) $row['year']) ?></option>
                     <?php endforeach; ?>
@@ -161,7 +169,7 @@ $val = function (string $key, $fallback = '') use ($photo) {
             <?= $photo ? 'Replace image (optional)' : 'Photograph' ?>
             <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" <?= $photo ? '' : 'required' ?>>
         </label>
-        <p class="hint">Original is stored on disk. A 4:3 thumbnail is generated for the grid. Camera EXIF is captured automatically (enable the PHP <code>exif</code> and <code>gd</code> extensions in cPanel).</p>
+        <p class="hint">Category and the image are required. Title, description, national park, and year can be left blank. Portrait and landscape photographs both keep their shape.</p>
         <div class="form-actions">
             <button class="btn btn-gold" type="submit"><?= $photo ? 'Save changes' : 'Upload' ?></button>
             <a class="btn" href="<?= e(url('admin/photos.php')) ?>">Back to list</a>

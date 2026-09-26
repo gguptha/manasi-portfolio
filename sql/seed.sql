@@ -14,6 +14,13 @@ INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
   ('footer_text', 'All images © Manasi. Please do not use without permission.')
 ON DUPLICATE KEY UPDATE `setting_value` = VALUES(`setting_value`);
 
+INSERT IGNORE INTO `settings` (`setting_key`, `setting_value`) VALUES
+  ('photo_landing_text', 'Field photographs from Indian forests — made on foot and from the hide, with attention to habitat and light.'),
+  ('photo_landing_hero', ''),
+  ('photo_landing_rows', '2'),
+  ('photo_landing_cols', '2'),
+  ('photo_landing_slots', '[0,0,0,0]');
+
 INSERT INTO `categories` (`name`, `slug`, `description`, `sort_order`, `is_active`) VALUES
   ('Reptiles', 'reptiles', 'Snakes, lizards, crocodiles, and turtles photographed in the wild.', 1, 1),
   ('Amphibians', 'amphibians', 'Frogs, toads, and other amphibians from forest floors and monsoon pools.', 2, 1),

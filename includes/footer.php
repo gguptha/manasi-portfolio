@@ -14,6 +14,6 @@
     </div>
     <p class="footer-copy"><?= e(setting('footer_text', 'All images remain copyright of the photographer.')) ?></p>
 </footer>
-<script src="<?= e(asset('js/main.js')) ?>"></script>
+<script src="<?= e(asset('js/main.js')) ?>?v=2"></script>
 </body>
 </html>

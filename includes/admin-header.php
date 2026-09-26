@@ -12,7 +12,7 @@ $adminNav = $adminNav ?? '';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>?v=2">
+    <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>?v=4">
     <link rel="icon" href="<?= e(asset('favicon.svg')) ?>" type="image/svg+xml">
 </head>
 <body class="admin-body">
@@ -32,6 +32,7 @@ $adminNav = $adminNav ?? '';
         <a class="<?= $adminNav === 'parks' ? 'is-active' : '' ?>" href="<?= e(url('admin/parks.php')) ?>">National Parks</a>
         <a class="<?= $adminNav === 'years' ? 'is-active' : '' ?>" href="<?= e(url('admin/years.php')) ?>">Years</a>
         <p class="nav-label">Site</p>
+        <a class="<?= $adminNav === 'photography' ? 'is-active' : '' ?>" href="<?= e(url('admin/photography.php')) ?>">Photography page</a>
         <a class="<?= $adminNav === 'settings' ? 'is-active' : '' ?>" href="<?= e(url('admin/settings.php')) ?>">Settings</a>
         <a href="<?= e(url()) ?>" target="_blank" rel="noopener">View website</a>
         <a href="<?= e(url('admin/logout.php')) ?>">Log out</a>

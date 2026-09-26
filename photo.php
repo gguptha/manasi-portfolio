@@ -15,21 +15,16 @@ if (!$photo) {
 }
 
 $navPair = adjacent_photo_ids($photo);
-$exifRows = [];
-$map = [
-    'Camera' => trim(implode(' ', array_filter([$photo['camera_make'], $photo['camera_model']]))),
-    'Lens' => $photo['lens'],
-    'Focal length' => $photo['focal_length'],
-    'Aperture' => $photo['aperture'],
-    'Shutter' => $photo['shutter_speed'],
-    'ISO' => $photo['iso'] !== null && $photo['iso'] !== '' ? 'ISO ' . $photo['iso'] : '',
-    'Captured' => $photo['taken_at'] ? date('d M Y, H:i', strtotime($photo['taken_at'])) : '',
-    'Dimensions' => ($photo['width'] && $photo['height']) ? $photo['width'] . ' × ' . $photo['height'] : '',
-];
-foreach ($map as $label => $value) {
-    if ($value !== null && trim((string) $value) !== '') {
-        $exifRows[] = ['label' => $label, 'value' => $value];
+$detailRows = [];
+if (!empty($photo['park_name'])) {
+    $parkValue = (string) $photo['park_name'];
+    if (!empty($photo['park_location'])) {
+        $parkValue .= ' (' . $photo['park_location'] . ')';
     }
+    $detailRows[] = ['label' => 'Location', 'value' => $parkValue];
+}
+if (!empty($photo['year_label'])) {
+    $detailRows[] = ['label' => 'Year', 'value' => (string) $photo['year_label']];
 }
 
 $pageTitle = $photo['title'] . ' — ' . setting('site_name', 'Manasi');
@@ -43,39 +38,31 @@ require __DIR__ . '/includes/header.php';
 ?>
 <article class="photo-view">
     <figure class="photo-stage">
+        <?php if ($navPair['prev']): ?>
+            <a class="photo-arrow photo-arrow-prev" href="<?= e(url('photo.php?id=' . (int) $navPair['prev']['id'])) ?>" aria-label="Previous photograph">‹</a>
+        <?php endif; ?>
         <img src="<?= e(photo_original($photo)) ?>" alt="<?= e($photo['title']) ?>">
+        <?php if ($navPair['next']): ?>
+            <a class="photo-arrow photo-arrow-next" href="<?= e(url('photo.php?id=' . (int) $navPair['next']['id'])) ?>" aria-label="Next photograph">›</a>
+        <?php endif; ?>
     </figure>
     <aside class="photo-sheet">
         <h1><?= e($photo['title']) ?></h1>
-        <ul class="photo-crumbs">
-            <?php if (!empty($photo['category_name'])): ?>
-                <li><a href="<?= e(url('gallery.php?type=category&slug=' . urlencode($photo['category_slug']))) ?>"><?= e($photo['category_name']) ?></a></li>
-            <?php endif; ?>
-            <?php if (!empty($photo['park_name'])): ?>
-                <li><a href="<?= e(url('gallery.php?type=park&slug=' . urlencode($photo['park_slug']))) ?>"><?= e($photo['park_name']) ?><?= !empty($photo['park_location']) ? ', ' . e($photo['park_location']) : '' ?></a></li>
-            <?php endif; ?>
-            <?php if (!empty($photo['year_label'])): ?>
-                <li><a href="<?= e(url('gallery.php?type=year&slug=' . urlencode((string) $photo['year_label']))) ?>"><?= e((string) $photo['year_label']) ?></a></li>
-            <?php endif; ?>
-        </ul>
         <?php if (!empty($photo['description'])): ?>
             <div class="photo-description">
                 <?= nl2br(e($photo['description'])) ?>
             </div>
         <?php endif; ?>
 
-        <h2>Exposure</h2>
-        <?php if ($exifRows): ?>
+        <?php if ($detailRows): ?>
             <dl class="exif-sheet">
-                <?php foreach ($exifRows as $row): ?>
+                <?php foreach ($detailRows as $row): ?>
                     <div>
                         <dt><?= e($row['label']) ?></dt>
-                        <dd><?= e((string) $row['value']) ?></dd>
+                        <dd><?= e($row['value']) ?></dd>
                     </div>
                 <?php endforeach; ?>
             </dl>
-        <?php else: ?>
-            <p class="muted">No EXIF data was embedded in this file.</p>
         <?php endif; ?>
 
         <div class="photo-nav">

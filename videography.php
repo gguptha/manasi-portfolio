@@ -24,39 +24,49 @@ $currentNav = 'videography';
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="page-hero">
-    <h1>Videography.</h1>
-    <p>Field films, behavioural notes, and landscape sequences.</p>
+    <h1 class="page-title">Videography</h1>
+    <?php $pageIntro = setting('page_videography_text', 'Field films, behavioural notes, and landscape sequences.'); ?>
+    <?php if ($pageIntro !== ''): ?><p class="page-intro"><?= nl2br(e($pageIntro)) ?></p><?php endif; ?>
 </section>
 <section class="section">
     <?php if (!$videos): ?>
         <div class="empty-state"><p>No films have been published yet.</p></div>
     <?php else: ?>
-        <div class="video-grid">
-            <?php foreach ($videos as $video): ?>
-                <a class="video-card" href="<?= e(url('video.php?id=' . (int) $video['id'])) ?>">
-                    <span class="video-thumb">
-                        <?php if (!empty($video['thumb_filename'])): ?>
-                            <img src="<?= e(upload_url('videos/thumbs/' . $video['thumb_filename'])) ?>" alt="<?= e($video['title']) ?>" loading="lazy">
-                        <?php else: ?>
-                            <span class="video-placeholder">▶</span>
+        <div class="video-rows">
+            <?php foreach ($videos as $index => $video): ?>
+                <?php
+                $embed = parse_video_embed((string) ($video['video_url'] ?? ''));
+                $poster = !empty($video['thumb_filename']) ? upload_url('videos/thumbs/' . $video['thumb_filename']) : '';
+                $file = !empty($video['video_filename']) ? upload_url('videos/files/' . $video['video_filename']) : '';
+                ?>
+                <article class="video-row<?= $index % 2 === 1 ? ' is-flipped' : '' ?>">
+                    <button
+                        class="video-poster<?= $poster === '' ? ' is-empty' : '' ?>"
+                        type="button"
+                        data-embed="<?= e((string) ($embed['embed'] ?? '')) ?>"
+                        data-file="<?= e($file) ?>"
+                        data-title="<?= e($video['title']) ?>"
+                        <?= ($embed['embed'] || $file !== '') ? '' : 'disabled' ?>
+                    >
+                        <?php if ($poster !== ''): ?>
+                            <img src="<?= e($poster) ?>" alt="<?= e($video['title']) ?>" loading="lazy">
                         <?php endif; ?>
-                    </span>
-                    <span class="thumb-meta">
-                        <span class="thumb-title"><?= e($video['title']) ?></span>
-                        <span class="thumb-sub">
-                            <?php
-                            echo e(implode(' · ', array_filter([
-                                $video['category_name'] ?? null,
-                                $video['park_name'] ?? null,
-                                isset($video['year_label']) ? (string) $video['year_label'] : null,
-                            ])));
-                            ?>
-                        </span>
-                    </span>
-                </a>
+                        <span class="video-play" aria-hidden="true">▶</span>
+                    </button>
+                    <div class="video-copy">
+                        <h2><?= e($video['title']) ?></h2>
+                        <?php if (!empty($video['description'])): ?>
+                            <p><?= nl2br(e($video['description'])) ?></p>
+                        <?php endif; ?>
+                    </div>
+                </article>
             <?php endforeach; ?>
         </div>
         <?= render_pagination($page, $pages, url('videography.php')) ?>
+        <div class="video-lightbox" hidden>
+            <button class="video-lightbox-close" type="button" aria-label="Close video">×</button>
+            <div class="video-lightbox-stage"></div>
+        </div>
     <?php endif; ?>
 </section>
 <?php require __DIR__ . '/includes/footer.php'; ?>

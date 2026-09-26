@@ -428,13 +428,16 @@ function extract_exif(string $path): array
 
 function gd_image_from_file(string $path, string $mime)
 {
+    if (!extension_loaded('gd')) {
+        return false;
+    }
     switch ($mime) {
         case 'image/jpeg':
-            return @imagecreatefromjpeg($path);
+            return function_exists('imagecreatefromjpeg') ? @imagecreatefromjpeg($path) : false;
         case 'image/png':
-            return @imagecreatefrompng($path);
+            return function_exists('imagecreatefrompng') ? @imagecreatefrompng($path) : false;
         case 'image/gif':
-            return @imagecreatefromgif($path);
+            return function_exists('imagecreatefromgif') ? @imagecreatefromgif($path) : false;
         case 'image/webp':
             if (function_exists('imagecreatefromwebp')) {
                 return @imagecreatefromwebp($path);
@@ -536,6 +539,41 @@ function create_cover_thumb(string $src, string $dest, string $mime, int $orient
     return $ok;
 }
 
+function create_fit_thumb(string $src, string $dest, string $mime, int $orientation, int $maxEdge = 1400): bool
+{
+    $srcIm = gd_image_from_file($src, $mime);
+    if (!$srcIm) {
+        return false;
+    }
+    $srcIm = apply_orientation($srcIm, $orientation);
+    $sw = imagesx($srcIm);
+    $sh = imagesy($srcIm);
+    $scale = min(1, $maxEdge / max(1, $sw, $sh));
+    $tw = max(1, (int) round($sw * $scale));
+    $th = max(1, (int) round($sh * $scale));
+
+    $dst = imagecreatetruecolor($tw, $th);
+    if ($mime === 'image/png' || $mime === 'image/webp') {
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        $transparent = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+        imagefilledrectangle($dst, 0, 0, $tw, $th, $transparent);
+    }
+    imagecopyresampled($dst, $srcIm, 0, 0, 0, 0, $tw, $th, $sw, $sh);
+    $ok = save_gd_image($dst, $dest, $mime === 'image/gif' ? 'image/jpeg' : $mime);
+    imagedestroy($srcIm);
+    imagedestroy($dst);
+    return $ok;
+}
+
+function oriented_dimensions(?int $width, ?int $height, int $orientation): array
+{
+    if ($width && $height && in_array($orientation, [5, 6, 7, 8], true)) {
+        return [$height, $width];
+    }
+    return [$width, $height];
+}
+
 function store_uploaded_image(array $file, string $kind = 'photos'): array
 {
     if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
@@ -568,10 +606,11 @@ function store_uploaded_image(array $file, string $kind = 'photos'): array
 
     $exif = extract_exif($origPath);
     $size = @getimagesize($origPath);
-    $width = $size[0] ?? null;
-    $height = $size[1] ?? null;
+    [$width, $height] = oriented_dimensions($size[0] ?? null, $size[1] ?? null, (int) $exif['orientation']);
 
-    $thumbOk = create_cover_thumb($origPath, $thumbPath, $mime, (int) $exif['orientation']);
+    $thumbOk = ($kind === 'photos' || $kind === 'videos')
+        ? create_fit_thumb($origPath, $thumbPath, $mime, (int) $exif['orientation'])
+        : create_cover_thumb($origPath, $thumbPath, $mime, (int) $exif['orientation']);
     if (!$thumbOk) {
         copy($origPath, $thumbPath);
     }
@@ -676,11 +715,167 @@ function photo_by_id(int $id, bool $publishedOnly = true): ?array
 
 function adjacent_photo_ids(array $photo): array
 {
+    $categoryId = (int) ($photo['category_id'] ?? 0);
+    if ($categoryId > 0) {
+        $stmt = db()->prepare(
+            'SELECT p.id, p.title, p.slug
+             FROM photos p
+             LEFT JOIN years y ON y.id = p.year_id
+             WHERE p.is_published = 1 AND p.category_id = ?
+             ORDER BY y.year DESC, p.sort_order ASC, p.created_at DESC, p.id DESC'
+        );
+        $stmt->execute([$categoryId]);
+        $rows = $stmt->fetchAll();
+        $index = null;
+        foreach ($rows as $i => $row) {
+            if ((int) $row['id'] === (int) $photo['id']) {
+                $index = $i;
+                break;
+            }
+        }
+        if ($index === null) {
+            return ['prev' => null, 'next' => null];
+        }
+        return [
+            'prev' => $index > 0 ? $rows[$index - 1] : null,
+            'next' => $rows[$index + 1] ?? null,
+        ];
+    }
+
     $prev = db()->prepare('SELECT id, title, slug FROM photos WHERE is_published = 1 AND id < ? ORDER BY id DESC LIMIT 1');
     $prev->execute([(int) $photo['id']]);
     $next = db()->prepare('SELECT id, title, slug FROM photos WHERE is_published = 1 AND id > ? ORDER BY id ASC LIMIT 1');
     $next->execute([(int) $photo['id']]);
     return ['prev' => $prev->fetch() ?: null, 'next' => $next->fetch() ?: null];
+}
+
+function save_setting(string $key, string $value): void
+{
+    $stmt = db()->prepare(
+        'INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)
+         ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)'
+    );
+    $stmt->execute([$key, $value]);
+}
+
+function photography_landing(): array
+{
+    $rows = (int) setting('photo_landing_rows', '2');
+    $cols = (int) setting('photo_landing_cols', '2');
+    $rows = max(1, min(6, $rows > 0 ? $rows : 2));
+    $cols = max(1, min(6, $cols > 0 ? $cols : 2));
+
+    $decoded = json_decode(setting('photo_landing_slots', '[]'), true);
+    $stored = is_array($decoded) ? array_values($decoded) : [];
+    $slots = [];
+    $count = $rows * $cols;
+    for ($i = 0; $i < $count; $i++) {
+        $slots[] = isset($stored[$i]) ? (int) $stored[$i] : 0;
+    }
+
+    $hero = basename(setting('photo_landing_hero', ''));
+    if ($hero !== '' && !preg_match('/^[A-Za-z0-9._-]+$/', $hero)) {
+        $hero = '';
+    }
+
+    return [
+        'text' => setting(
+            'photo_landing_text',
+            'Field photographs from Indian forests — made on foot and from the hide, with attention to habitat and light.'
+        ),
+        'hero' => $hero,
+        'rows' => $rows,
+        'cols' => $cols,
+        'slots' => $slots,
+    ];
+}
+
+function landing_hero_url(string $filename): string
+{
+    return upload_url('landing/originals/' . $filename);
+}
+
+function photos_by_ids(array $ids, bool $publishedOnly = true): array
+{
+    $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
+    if (!$ids) {
+        return [];
+    }
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $sql = "SELECT p.*, c.name AS category_name, c.slug AS category_slug
+            FROM photos p
+            LEFT JOIN categories c ON c.id = p.category_id
+            WHERE p.id IN ($placeholders)";
+    if ($publishedOnly) {
+        $sql .= ' AND p.is_published = 1';
+    }
+    $stmt = db()->prepare($sql);
+    $stmt->execute($ids);
+    $byId = [];
+    foreach ($stmt->fetchAll() as $row) {
+        $byId[(int) $row['id']] = $row;
+    }
+    return $byId;
+}
+
+function photo_is_vertical(array $photo): bool
+{
+    $width = (int) ($photo['width'] ?? 0);
+    $height = (int) ($photo['height'] ?? 0);
+    return $width > 0 && $height > $width;
+}
+
+function photo_height_over_width(array $photo): float
+{
+    $width = (int) ($photo['width'] ?? 0);
+    $height = (int) ($photo['height'] ?? 0);
+    if ($width <= 0 || $height <= 0) {
+        return 2 / 3;
+    }
+    return $height / $width;
+}
+
+function gallery_rows(array $photos): array
+{
+    $rows = [];
+    $count = count($photos);
+    for ($i = 0; $i < $count; $i += 2) {
+        $left = $photos[$i];
+        if (!isset($photos[$i + 1])) {
+            $rows[] = [
+                'single' => true,
+                'columns' => '1fr',
+                'ratio' => 0,
+                'photos' => [$left],
+            ];
+            continue;
+        }
+        $right = $photos[$i + 1];
+        $leftVertical = photo_is_vertical($left);
+        $rightVertical = photo_is_vertical($right);
+        if ($leftVertical === $rightVertical) {
+            $leftShare = 0.5;
+            $rightShare = 0.5;
+            $columns = '1fr 1fr';
+        } else {
+            $leftShare = $leftVertical ? 0.30 : 0.70;
+            $rightShare = $rightVertical ? 0.30 : 0.70;
+            $columns = $leftVertical ? '3fr 7fr' : '7fr 3fr';
+        }
+        $leftHeight = $leftShare * photo_height_over_width($left);
+        $rightHeight = $rightShare * photo_height_over_width($right);
+        $rowHeight = min($leftHeight, $rightHeight);
+        if ($rowHeight <= 0) {
+            $rowHeight = 0.4;
+        }
+        $rows[] = [
+            'single' => false,
+            'columns' => $columns,
+            'ratio' => 1 / $rowHeight,
+            'photos' => [$left, $right],
+        ];
+    }
+    return $rows;
 }
 
 function is_post(): bool

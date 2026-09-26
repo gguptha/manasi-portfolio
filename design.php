@@ -22,8 +22,9 @@ $currentNav = 'design';
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="page-hero">
-    <h1>Design.</h1>
-    <p>Graphic work, composites, and related stills.</p>
+    <h1 class="page-title">Design</h1>
+    <?php $pageIntro = setting('page_design_text', 'Graphic work, composites, and related stills.'); ?>
+    <?php if ($pageIntro !== ''): ?><p class="page-intro"><?= nl2br(e($pageIntro)) ?></p><?php endif; ?>
 </section>
 <section class="section">
     <?php if (!$items): ?>

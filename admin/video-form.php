@@ -140,8 +140,11 @@ $val = function (string $key, $fallback = '') use ($video) {
     <label>Duration
         <input type="text" name="duration" placeholder="4:12" value="<?= e((string) $val('duration')) ?>">
     </label>
-    <label>Poster / thumbnail
-        <input type="file" name="thumb" accept="image/*">
+    <label class="span-2">Poster (optional)
+        <?php if (!empty($video['thumb_filename'])): ?>
+            <img class="preview" src="<?= e(upload_url('videos/thumbs/' . $video['thumb_filename'])) ?>" alt="">
+        <?php endif; ?>
+        <input type="file" name="thumb" accept="image/jpeg,image/png,image/webp,image/gif">
     </label>
     <label>Video file (optional, MP4 preferred)
         <input type="file" name="video_file" accept="video/mp4,video/webm,video/quicktime">
@@ -156,6 +159,6 @@ $val = function (string $key, $fallback = '') use ($video) {
         <button class="btn btn-gold" type="submit"><?= $video ? 'Save' : 'Add film' ?></button>
         <a class="btn" href="<?= e(url('admin/videos.php')) ?>">Back</a>
     </div>
-    <p class="hint span-2">GoDaddy shared plans often cap uploads at 32–128 MB. Host long films on YouTube or Vimeo and paste the link.</p>
+    <p class="hint span-2">The poster is optional. On the videography page, clicking it opens the film full screen and plays it. Host long films on YouTube or Vimeo and paste the link.</p>
 </form>
 <?php require dirname(__DIR__) . '/includes/admin-footer.php'; ?>

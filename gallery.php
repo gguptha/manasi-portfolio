@@ -182,6 +182,8 @@ require __DIR__ . '/includes/header.php';
 <section class="section">
     <?php
     $emptyText = 'No photographs in this collection yet.';
+    $showMeta = false;
+    $pairedRows = true;
     require __DIR__ . '/includes/gallery-grid.php';
     echo render_pagination($page, $pages, url('gallery.php?type=' . urlencode($type) . '&slug=' . urlencode($slug)));
     ?>
