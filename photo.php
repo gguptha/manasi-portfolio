@@ -47,10 +47,12 @@ require __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </figure>
     <aside class="photo-sheet">
-        <?php if (!empty($photo['category_name']) && !empty($photo['category_slug'])): ?>
-            <p class="photo-back"><a class="text-link" href="<?= e(url('gallery.php?type=category&slug=' . urlencode((string) $photo['category_slug']))) ?>"><?= e($photo['category_name']) ?></a></p>
-        <?php endif; ?>
-        <h1><?= e($photo['title']) ?></h1>
+        <div class="photo-title-row">
+            <h1><?= e($photo['title']) ?></h1>
+            <?php if (!empty($photo['category_slug'])): ?>
+                <a class="text-link photo-back" href="<?= e(url('gallery.php?type=category&slug=' . urlencode((string) $photo['category_slug']))) ?>" aria-label="<?= e('Back to ' . ($photo['category_name'] ?: 'gallery')) ?>">X</a>
+            <?php endif; ?>
+        </div>
         <?php if (!empty($photo['description'])): ?>
             <div class="photo-description">
                 <?= nl2br(e($photo['description'])) ?>
@@ -68,11 +70,6 @@ require __DIR__ . '/includes/header.php';
             </dl>
         <?php endif; ?>
 
-        <?php if (!empty($photo['category_slug'])): ?>
-            <div class="photo-nav">
-                <a href="<?= e(url('gallery.php?type=category&slug=' . urlencode((string) $photo['category_slug']))) ?>">← <?= e($photo['category_name'] ?: 'Gallery') ?></a>
-            </div>
-        <?php endif; ?>
     </aside>
 </article>
 <?php require __DIR__ . '/includes/footer.php'; ?>

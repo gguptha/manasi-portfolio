@@ -385,7 +385,20 @@ button, input, select, textarea { font: inherit; }
     background: var(--bg);
 }
 .photo-sheet h1 { font-size: 2.3rem; margin: 0 0 0.8rem; }
-.photo-back { margin: 0 0 0.9rem; }
+.photo-title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.2rem;
+    margin: 0 0 0.8rem;
+}
+.photo-sheet .photo-title-row h1 { margin: 0; }
+.photo-title-row .photo-back {
+    margin: 0 0 0 auto;
+    white-space: nowrap;
+    text-align: right;
+    font-size: calc(0.7rem + 4pt);
+}
 .photo-sheet h2 {
     font-family: var(--sans);
     font-size: 0.68rem;
@@ -420,17 +433,6 @@ button, input, select, textarea { font: inherit; }
 }
 .exif-sheet dt { color: var(--muted); font-size: calc(0.68rem + 1pt); letter-spacing: 0.1em; text-transform: uppercase; }
 .exif-sheet dd { margin: 0; }
-.photo-nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 2rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-.photo-nav a:hover { color: var(--ink); }
 .muted { color: var(--muted); }
 
 .film-view { max-width: 1040px; margin: 0 auto; padding: 2.2rem 1.6rem 5rem; background: var(--bg); }

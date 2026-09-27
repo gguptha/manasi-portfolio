@@ -17,7 +17,7 @@ $currentNav = $currentNav ?? '';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Josefin+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>?v=22">
+    <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>?v=27">
     <link rel="icon" href="<?= e(asset('favicon.svg')) ?>" type="image/svg+xml">
 </head>
 <body class="<?= e($bodyClass) ?>">
