@@ -115,8 +115,8 @@ if ($slug === '') {
     require __DIR__ . '/includes/header.php';
     ?>
     <section class="page-hero">
-        <h1><?= e($title) ?>.</h1>
-        <p><?= e($intro) ?></p>
+        <h1 class="page-title"><?= e($title) ?></h1>
+        <?php if ($intro !== ''): ?><p class="page-intro"><?= e($intro) ?></p><?php endif; ?>
     </section>
     <section class="section">
         <div class="index-grid">
@@ -175,9 +175,8 @@ $metaDescription = $intro !== '' ? $intro : $title;
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="page-hero">
-    <h1><?= e($title) ?>.</h1>
-    <?php if ($intro !== ''): ?><p><?= e($intro) ?></p><?php endif; ?>
-    <p class="count-line"><?= $total ?> photograph<?= $total === 1 ? '' : 's' ?></p>
+    <h1 class="page-title"><?= e($title) ?></h1>
+    <?php if ($intro !== ''): ?><p class="page-intro"><?= e($intro) ?></p><?php endif; ?>
 </section>
 <section class="section">
     <?php

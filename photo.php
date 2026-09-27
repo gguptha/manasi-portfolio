@@ -47,6 +47,9 @@ require __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </figure>
     <aside class="photo-sheet">
+        <?php if (!empty($photo['category_name']) && !empty($photo['category_slug'])): ?>
+            <p class="photo-back"><a class="text-link" href="<?= e(url('gallery.php?type=category&slug=' . urlencode((string) $photo['category_slug']))) ?>"><?= e($photo['category_name']) ?></a></p>
+        <?php endif; ?>
         <h1><?= e($photo['title']) ?></h1>
         <?php if (!empty($photo['description'])): ?>
             <div class="photo-description">
