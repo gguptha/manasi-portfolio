@@ -11,13 +11,6 @@ $currentNav = 'categories';
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="landing-hero">
-    <div class="landing-hero-image<?= $landing['hero'] === '' ? ' is-empty' : '' ?>">
-        <?php if ($landing['hero'] !== ''): ?>
-            <img src="<?= e(landing_hero_url($landing['hero'])) ?>" alt="Photography">
-        <?php else: ?>
-            <p>Featured image</p>
-        <?php endif; ?>
-    </div>
     <div class="landing-hero-copy">
         <?php if ($landing['text'] !== ''): ?>
             <p><?= nl2br(e($landing['text'])) ?></p>

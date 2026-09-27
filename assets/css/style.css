@@ -505,10 +505,7 @@ button, input, select, textarea { font: inherit; }
     max-width: 1280px;
     margin: 0 auto;
     padding: 2.2rem 1.6rem 0;
-    display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 1fr);
-    gap: 1.4rem;
-    align-items: start;
+    display: block;
 }
 .landing-hero-image img {
     width: 100%;
@@ -699,7 +696,6 @@ body.video-open { overflow: hidden; }
     .header-inner { position: relative; }
     .gallery-grid, .index-grid, .practice-grid { grid-template-columns: 1fr; }
     .intro { padding-top: 3.5rem; }
-    .landing-hero { grid-template-columns: 1fr; }
     .video-row { grid-template-columns: 1fr; }
     .video-row.is-flipped .video-poster,
     .video-row.is-flipped .video-copy { order: 0; }
