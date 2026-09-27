@@ -68,16 +68,11 @@ require __DIR__ . '/includes/header.php';
             </dl>
         <?php endif; ?>
 
-        <div class="photo-nav">
-            <?php if ($navPair['prev']): ?>
-                <a href="<?= e(url('photo.php?id=' . (int) $navPair['prev']['id'])) ?>">← <?= e($navPair['prev']['title']) ?></a>
-            <?php else: ?>
-                <span></span>
-            <?php endif; ?>
-            <?php if ($navPair['next']): ?>
-                <a href="<?= e(url('photo.php?id=' . (int) $navPair['next']['id'])) ?>"><?= e($navPair['next']['title']) ?> →</a>
-            <?php endif; ?>
-        </div>
+        <?php if (!empty($photo['category_slug'])): ?>
+            <div class="photo-nav">
+                <a href="<?= e(url('gallery.php?type=category&slug=' . urlencode((string) $photo['category_slug']))) ?>">← <?= e($photo['category_name'] ?: 'Gallery') ?></a>
+            </div>
+        <?php endif; ?>
     </aside>
 </article>
 <?php require __DIR__ . '/includes/footer.php'; ?>
