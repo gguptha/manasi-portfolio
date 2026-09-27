@@ -590,16 +590,18 @@ button, input, select, textarea { font: inherit; }
 .video-poster {
     position: relative;
     display: block;
-    width: 100%;
+    width: 50%;
+    justify-self: start;
     padding: 0;
     border: 0;
     background: #1c1b19;
     cursor: pointer;
     color: #fff;
 }
+.video-row.is-flipped .video-poster { justify-self: end; }
 .video-poster:disabled { cursor: default; }
 .video-poster img { width: 100%; height: auto; display: block; }
-.video-poster.is-empty { min-height: 280px; }
+.video-poster.is-empty { min-height: 140px; }
 .video-play {
     position: absolute;
     left: 50%;
